@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "Tank.h"
+#include "Camera/CameraActor.h"
 #include "TankPlayerController.generated.h"
 
 /**
@@ -21,7 +22,14 @@ public:
 	void BeginPlay() override;
 	void Tick(float DeltaTime) override;
 
+	UPROPERTY(EditAnywhere)
+	float CrossHairXLocation_WidthPerc = 0.5f;
+
+	UPROPERTY(EditAnywhere)
+	float CrossHairYLocation_HeightPerc = 0.33333;
+
 private:
 	void AimTowardsCrosshair();
+	bool GetSightRayHitLocation(FVector& o_hitLocation) const;
 	void PrintOutPossessedTankName();
 };

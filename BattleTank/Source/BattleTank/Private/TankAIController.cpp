@@ -23,7 +23,16 @@ void ATankAIController::BeginPlay()
 
 void ATankAIController::Tick(float DeltaTime)
 {
-
+	Super::Tick(DeltaTime);
+	ATank* ptPlayerTank = GetPlayerTank();
+	if (ptPlayerTank)
+	{
+		ATank* ptMyTank = GetPossessedTank();
+		if (ptMyTank)
+		{
+			ptMyTank->AimAt(ptPlayerTank->GetActorLocation());
+		}
+	}
 }
 
 ATank* ATankAIController::GetPossessedTank()

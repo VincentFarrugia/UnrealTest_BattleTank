@@ -32,3 +32,7 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
+void ATank::AimAt(FVector i_aimPt)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Tank '%s' is aiming at: '%s'"), *GetName(), *(i_aimPt.ToString()));
+}

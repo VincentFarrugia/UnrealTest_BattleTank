@@ -1,11 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TankPlayerController.h"
+#include "Engine/World.h"
 
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 	PrintOutPossessedTankName();
+
+	//m_ptDebugCube = GetWorld()->
 }
 
 void ATankPlayerController::Tick(float DeltaTime)
@@ -25,11 +28,46 @@ void ATankPlayerController::AimTowardsCrosshair()
 
 	// Raycast crosshair to get the world location.
 
-	// If the raycast hits the landscape:
+	FVector hitLocation;
+	if (GetSightRayHitLocation(hitLocation))
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("HitLocation: '%s'"), *hitLocation.ToString());
 
-	// Call Aim on the Tank itself with the Target World Location which will do the following:
-	// Rotate the Turret. (Maybe implement a min/max turn angle)
-	// Rotate the Barrel. (Maybe implement a min/max elevation angle)
+		// Call Aim on the Tank itself with the Target World Location which will do the following:
+		// Rotate the Turret. (Maybe implement a min/max turn angle)
+		// Rotate the Barrel. (Maybe implement a min/max elevation angle)
+
+		GetControlledTank()->AimAt(hitLocation);
+	}
+}
+
+bool ATankPlayerController::GetSightRayHitLocation(FVector& o_hitLocation) const
+{
+	bool didHitSomething = false;
+	ATank* ptPlayerTank = GetControlledTank();
+	if (ptPlayerTank)
+	{
+		int32 viewportWidth, viewportHeight;
+		GetViewportSize(viewportWidth, viewportHeight);
+		FVector2D crosshairScreenLocation(CrossHairXLocation_WidthPerc * viewportWidth, CrossHairYLocation_HeightPerc * viewportHeight);
+		FVector crosshairPtInWorldSpace;
+		FVector crosshairForwardVector;		
+		DeprojectScreenPositionToWorld(crosshairScreenLocation.X, crosshairScreenLocation.Y, crosshairPtInWorldSpace, crosshairForwardVector);
+
+		FVector rayExtentPt = crosshairPtInWorldSpace + (crosshairForwardVector * 99999.0f);
+		FHitResult rayHitResult;
+		didHitSomething = GetWorld()->LineTraceSingleByChannel(rayHitResult, crosshairPtInWorldSpace, rayExtentPt, ECollisionChannel::ECC_Visibility);
+
+		if (didHitSomething)
+		{
+			o_hitLocation = rayHitResult.ImpactPoint;
+		}
+		else
+		{
+			o_hitLocation = FVector::ZeroVector;
+		}
+	}
+	return didHitSomething;
 }
 
 void ATankPlayerController::PrintOutPossessedTankName()
