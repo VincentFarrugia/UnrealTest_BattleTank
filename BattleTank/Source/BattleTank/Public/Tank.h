@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "TankAimingComponent.h"
+#include "TankBarrel.h"
 #include "Tank.generated.h"
 
 UCLASS()
@@ -19,13 +21,19 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UTankAimingComponent* AimingComponent;
+
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UFUNCTION(BlueprintCallable, Category = Setup)
+	void SetBarrelReference(UTankBarrel* BarrelToSet);
+
 	void AimAt(FVector i_aimPt);
+
+	UPROPERTY(EditAnywhere, Category = Firing)
+	float LaunchSpeed = 100000; // In cm per second.
 	
 };
