@@ -22,4 +22,7 @@ public:
 	ATank* GetPossessedTank();
 	ATank* GetPlayerTank();
 	void PrintOutPossessedTankName();
+
+	// How close the AI tank will come to its target before stopping.
+	float AcceptanceRadius = 3000;
 };
