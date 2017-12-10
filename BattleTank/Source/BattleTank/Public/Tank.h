@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "TankAimingComponent.h"
+#include "TankMovementComponent.h"
 #include "TankBarrel.h"
 #include "TankTurret.h"
 #include "Projectile.h"
@@ -24,6 +25,9 @@ protected:
 	virtual void BeginPlay() override;
 
 	UTankAimingComponent* AimingComponent;
+
+	UPROPERTY(BlueprintReadOnly)
+	UTankMovementComponent* MovementComponent;
 
 public:	
 
