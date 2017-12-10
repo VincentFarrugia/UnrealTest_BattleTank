@@ -6,6 +6,7 @@
 #include "GameFramework/Pawn.h"
 #include "TankAimingComponent.h"
 #include "TankBarrel.h"
+#include "TankTurret.h"
 #include "Tank.generated.h"
 
 UCLASS()
@@ -31,9 +32,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Setup)
 	void SetBarrelReference(UTankBarrel* BarrelToSet);
 
+	UFUNCTION(BlueprintCallable, Category = Setup)
+	void SetTurretReference(UTankTurret* TurretToSet);
+
+	UFUNCTION(BlueprintCallable, Category = Fire)
+	void Fire();
+
 	void AimAt(FVector i_aimPt);
 
 	UPROPERTY(EditAnywhere, Category = Firing)
-	float LaunchSpeed = 100000; // In cm per second.
+	float LaunchSpeed = 4000; // In cm per second.
 	
 };
