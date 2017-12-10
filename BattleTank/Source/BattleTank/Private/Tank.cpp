@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Tank.h"
+#include "Runtime/Engine/Classes/Engine/World.h"
 
 
 // Sets default values
@@ -28,6 +29,7 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ATank::SetBarrelReference(UTankBarrel* BarrelToSet)
 {
+	Barrel = BarrelToSet;
 	AimingComponent->SetBarrelReference(BarrelToSet);
 }
 
@@ -38,6 +40,8 @@ void ATank::SetTurretReference(UTankTurret* TurretToSet)
 
 void ATank::Fire()
 {	
+	FVector projectileSpawnPt = Barrel->GetSocketLocation(FName("BarrelEnd"));
+	GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, projectileSpawnPt, FRotator::ZeroRotator);
 	UE_LOG(LogTemp, Warning, TEXT("Tank: '%s' has fired its cannon!"), *GetName());
 }
 
