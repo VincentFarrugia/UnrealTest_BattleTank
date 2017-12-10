@@ -21,5 +21,5 @@ public:
 
 	ATank* GetPossessedTank();
 	ATank* GetPlayerTank();
-	void PrintOutPossessedTankName();	
+	void PrintOutPossessedTankName();
 };

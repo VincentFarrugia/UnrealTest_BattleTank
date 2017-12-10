@@ -8,17 +8,6 @@
 void ATankAIController::BeginPlay()
 {
 	Super::BeginPlay();
-	PrintOutPossessedTankName();
-	
-	ATank* ptReqPlayerTank = GetPlayerTank();
-	if (!ptReqPlayerTank)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("AI Tank '%s' did not find player tank"), *GetName());
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("AI Tank '%s' found player tank '%s'"), *GetName(), *ptReqPlayerTank->GetName());
-	}
 }
 
 void ATankAIController::Tick(float DeltaTime)
@@ -31,6 +20,9 @@ void ATankAIController::Tick(float DeltaTime)
 		if (ptMyTank)
 		{
 			ptMyTank->AimAt(ptPlayerTank->GetActorLocation());
+
+
+			ptMyTank->Fire();
 		}
 	}
 }

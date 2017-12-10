@@ -39,10 +39,22 @@ void ATank::SetTurretReference(UTankTurret* TurretToSet)
 }
 
 void ATank::Fire()
-{	
-	FVector projectileSpawnPt = Barrel->GetSocketLocation(FName("BarrelEnd"));
-	GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, projectileSpawnPt, FRotator::ZeroRotator);
-	UE_LOG(LogTemp, Warning, TEXT("Tank: '%s' has fired its cannon!"), *GetName());
+{		
+	bool isReloaded = (FPlatformTime::Seconds() - lastFireTime) > reloadTimeInSeconds;
+
+	if ((Barrel)&&(isReloaded))
+	{
+		AProjectile* ptNwProjectile = GetWorld()->SpawnActor<AProjectile>(
+			ProjectileBlueprint,
+			Barrel->GetSocketLocation(FName("BarrelEnd")),
+			Barrel->GetSocketRotation(FName("BarrelEnd"))
+			);
+
+		ptNwProjectile->LaunchProjectile(LaunchSpeed);
+		lastFireTime = FPlatformTime::Seconds();
+
+		UE_LOG(LogTemp, Warning, TEXT("Tank: '%s' has fired its cannon!"), *GetName());
+	}
 }
 
 void ATank::AimAt(FVector i_aimPt)
