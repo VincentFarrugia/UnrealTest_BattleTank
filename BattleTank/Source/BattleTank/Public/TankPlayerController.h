@@ -4,8 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "Tank.h"
-#include "Camera/CameraActor.h"
 #include "TankAimingComponent.h"
 #include "TankPlayerController.generated.h"
 
@@ -18,9 +16,6 @@ class BATTLETANK_API ATankPlayerController : public APlayerController
 	GENERATED_BODY()
 	
 public:
-
-	UFUNCTION(BlueprintCallable, Category="Setup")
-	ATank* GetControlledTank() const;
 
 	void BeginPlay() override;
 	void Tick(float DeltaTime) override;
@@ -39,5 +34,4 @@ protected:
 private:
 	void AimTowardsCrosshair();
 	bool GetSightRayHitLocation(FVector& o_hitLocation) const;
-	void PrintOutPossessedTankName();
 };

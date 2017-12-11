@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
-#include "Tank.h"
 #include "TankAIController.generated.h"
 
 /**
@@ -18,10 +17,6 @@ class BATTLETANK_API ATankAIController : public AAIController
 public:
 	void BeginPlay() override;
 	void Tick(float DeltaTime) override;
-
-	ATank* GetPossessedTank();
-	ATank* GetPlayerTank();
-	void PrintOutPossessedTankName();
 
 	// How close the AI tank will come to its target before stopping.
 	float AcceptanceRadius = 3000;

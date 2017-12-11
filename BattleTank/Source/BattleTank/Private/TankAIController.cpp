@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TankAIController.h"
+#include "TankAimingComponent.h"
 #include "Engine/World.h"
 
 
@@ -13,47 +14,16 @@ void ATankAIController::BeginPlay()
 void ATankAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	ATank* ptPlayerTank = GetPlayerTank();
-	if (ensure(ptPlayerTank))
-	{
-		ATank* ptMyTank = GetPossessedTank();
-		if (ensure(ptMyTank))
-		{
-			MoveToActor(ptPlayerTank, AcceptanceRadius);
+	APawn* ptPlayerTank = GetWorld()->GetFirstPlayerController()->GetPawn();
+	APawn* ptMyTank = GetPawn();
 
-			ptMyTank->AimAt(ptPlayerTank->GetActorLocation());
-			//ptMyTank->Fire();
-		}
-	}
-}
+	if (!ensure(ptPlayerTank && ptMyTank)) { return; }
+		
+	MoveToActor(ptPlayerTank, AcceptanceRadius);
 
-ATank* ATankAIController::GetPossessedTank()
-{
-	return Cast<ATank>(GetPawn());
-}
+	UTankAimingComponent* myAimingComponent = ptMyTank->FindComponentByClass<UTankAimingComponent>();
+	if (!ensure(myAimingComponent)) { return; }
+	myAimingComponent->AimAt(ptPlayerTank->GetActorLocation());
 
-ATank* ATankAIController::GetPlayerTank()
-{
-	APlayerController* ptFirstPlayerController = GetWorld()->GetFirstPlayerController();
-	if (!ptFirstPlayerController)
-	{
-		return nullptr;
-	}
-	else
-	{
-		return Cast<ATank>(ptFirstPlayerController->GetPawn());
-	}
-}
-
-void ATankAIController::PrintOutPossessedTankName()
-{
-	ATank* ptReqTank = GetPossessedTank();
-	if (!ptReqTank)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("TankAIController: Not possessing a Tank"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("TankAIController: Possessing Tank '%s'"), *ptReqTank->GetName());
-	}
+	//ptMyTank->Fire();
 }

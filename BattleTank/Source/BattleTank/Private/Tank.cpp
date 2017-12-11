@@ -14,7 +14,6 @@ ATank::ATank()
 void ATank::BeginPlay()
 {
 	Super::BeginPlay();
-	AimingComponent = FindComponentByClass<UTankAimingComponent>();
 }
 
 void ATank::Fire()
@@ -31,13 +30,7 @@ void ATank::Fire()
 			Barrel->GetSocketRotation(FName("BarrelEnd"))
 			);
 
-		ptNwProjectile->LaunchProjectile(LaunchSpeed);
+		//ptNwProjectile->LaunchProjectile(LaunchSpeed);
 		lastFireTime = FPlatformTime::Seconds();
 	}
-}
-
-void ATank::AimAt(FVector i_aimPt)
-{
-	if (!ensure(AimingComponent)) { return; }
-	AimingComponent->AimAt(i_aimPt, LaunchSpeed);
 }

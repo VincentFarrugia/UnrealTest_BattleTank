@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
-#include "TankAimingComponent.h"
 #include "TankMovementComponent.h"
 #include "TankBarrel.h"
 #include "Projectile.h"
@@ -24,9 +23,6 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(BlueprintReadOnly)
-	UTankAimingComponent* AimingComponent;
-
-	UPROPERTY(BlueprintReadOnly)
 	UTankMovementComponent* MovementComponent;
 
 public:	
@@ -36,11 +32,6 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = Setup)
 	TSubclassOf<AProjectile> ProjectileBlueprint;
-
-	void AimAt(FVector i_aimPt);
-
-	UPROPERTY(EditAnywhere, Category = Firing)
-	float LaunchSpeed = 4000; // In cm per second.
 
 	UPROPERTY(EditDefaultsOnly, Category = Firing)
 	double reloadTimeInSeconds = 3.0f;

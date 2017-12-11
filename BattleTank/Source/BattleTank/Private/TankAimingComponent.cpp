@@ -35,7 +35,7 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	// ...
 }
 
-void UTankAimingComponent::AimAt(FVector i_aimPt, float i_launchSpeedInCMPerSecond)
+void UTankAimingComponent::AimAt(FVector i_aimPt)
 {	
 	if (!ensure(Barrel && Turret)) { return; }
 
@@ -49,7 +49,7 @@ void UTankAimingComponent::AimAt(FVector i_aimPt, float i_launchSpeedInCMPerSeco
 		launchVelocity,
 		startLocation,
 		i_aimPt,
-		i_launchSpeedInCMPerSecond,
+		LaunchSpeed,
 		false,
 		0,
 		0,
