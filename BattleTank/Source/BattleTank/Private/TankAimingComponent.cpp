@@ -37,8 +37,7 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 
 void UTankAimingComponent::AimAt(FVector i_aimPt, float i_launchSpeedInCMPerSecond)
 {	
-	if (!Barrel) { return; }
-	if (!Turret) { return; }
+	if (!ensure(Barrel && Turret)) { return; }
 
 	FVector launchVelocity;
 	FVector startLocation = Barrel->GetSocketLocation(FName("BarrelEnd"));
@@ -65,11 +64,6 @@ void UTankAimingComponent::AimAt(FVector i_aimPt, float i_launchSpeedInCMPerSeco
 		FVector aimDirection = launchVelocity.GetSafeNormal();
 		MoveTurret(aimDirection);
 		MoveBarrel(aimDirection);
-
-		/*UE_LOG(LogTemp, Warning, TEXT("Tank '%s' is aiming at: '%s' from '%s'"),
-			*(GetOwner()->GetName()),
-			*(i_aimPt.ToString()),
-			*(Barrel->GetComponentLocation().ToString()));*/
 	}	
 }
 

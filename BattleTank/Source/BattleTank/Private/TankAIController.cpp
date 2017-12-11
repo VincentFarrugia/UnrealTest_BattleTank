@@ -14,10 +14,10 @@ void ATankAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	ATank* ptPlayerTank = GetPlayerTank();
-	if (ptPlayerTank)
+	if (ensure(ptPlayerTank))
 	{
 		ATank* ptMyTank = GetPossessedTank();
-		if (ptMyTank)
+		if (ensure(ptMyTank))
 		{
 			MoveToActor(ptPlayerTank, AcceptanceRadius);
 

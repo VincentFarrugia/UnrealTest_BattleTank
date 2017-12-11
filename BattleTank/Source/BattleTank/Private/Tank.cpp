@@ -9,20 +9,21 @@ ATank::ATank()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;	
-	UE_LOG(LogTemp, Warning, TEXT("CENSUTEST: ATank C++ Constructor called."));
 }
 
 void ATank::BeginPlay()
 {
 	Super::BeginPlay();
-	UE_LOG(LogTemp, Warning, TEXT("CENSUTEST: ATank C++ BeginPlay called."));
+	AimingComponent = FindComponentByClass<UTankAimingComponent>();
 }
 
 void ATank::Fire()
 {		
+	if (!ensure(Barrel)) { return; }
+
 	bool isReloaded = (FPlatformTime::Seconds() - lastFireTime) > reloadTimeInSeconds;
 
-	if ((Barrel)&&(isReloaded))
+	if (isReloaded)
 	{
 		AProjectile* ptNwProjectile = GetWorld()->SpawnActor<AProjectile>(
 			ProjectileBlueprint,
@@ -32,13 +33,11 @@ void ATank::Fire()
 
 		ptNwProjectile->LaunchProjectile(LaunchSpeed);
 		lastFireTime = FPlatformTime::Seconds();
-
-		UE_LOG(LogTemp, Warning, TEXT("Tank: '%s' has fired its cannon!"), *GetName());
 	}
 }
 
 void ATank::AimAt(FVector i_aimPt)
 {
-	if (!AimingComponent) { return; }
+	if (!ensure(AimingComponent)) { return; }
 	AimingComponent->AimAt(i_aimPt, LaunchSpeed);
 }

@@ -8,13 +8,9 @@ void ATankPlayerController::BeginPlay()
 	Super::BeginPlay();
 	PrintOutPossessedTankName();
 	UTankAimingComponent* AimingComponent = GetControlledTank()->FindComponentByClass<UTankAimingComponent>();
-	if (AimingComponent)
+	if(ensure(AimingComponent))
 	{
 		FoundAimingComponent(AimingComponent);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Player controller can't find aiming component at Begin Play"))
 	}
 }
 
@@ -31,15 +27,13 @@ ATank* ATankPlayerController::GetControlledTank() const
 
 void ATankPlayerController::AimTowardsCrosshair()
 {	
-	if (!GetControlledTank()) { return; }
+	if (!ensure(GetControlledTank())) { return; }
 
 	// Raycast crosshair to get the world location.
 
 	FVector hitLocation;
 	if (GetSightRayHitLocation(hitLocation))
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("HitLocation: '%s'"), *hitLocation.ToString());
-
 		// Call Aim on the Tank itself with the Target World Location which will do the following:
 		// Rotate the Turret. (Maybe implement a min/max turn angle)
 		// Rotate the Barrel. (Maybe implement a min/max elevation angle)
