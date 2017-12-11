@@ -8,34 +8,14 @@
 ATank::ATank()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
-	AimingComponent = CreateDefaultSubobject<UTankAimingComponent>("AimingComponent");	
+	PrimaryActorTick.bCanEverTick = true;	
+	UE_LOG(LogTemp, Warning, TEXT("CENSUTEST: ATank C++ Constructor called."));
 }
 
-// Called when the game starts or when spawned
 void ATank::BeginPlay()
 {
 	Super::BeginPlay();
-	PrimaryActorTick.bCanEverTick = false;
-}
-
-// Called to bind functionality to input
-void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-}
-
-void ATank::SetBarrelReference(UTankBarrel* BarrelToSet)
-{
-	Barrel = BarrelToSet;
-	AimingComponent->SetBarrelReference(BarrelToSet);
-}
-
-void ATank::SetTurretReference(UTankTurret* TurretToSet)
-{
-	AimingComponent->SetTurretReference(TurretToSet);
+	UE_LOG(LogTemp, Warning, TEXT("CENSUTEST: ATank C++ BeginPlay called."));
 }
 
 void ATank::Fire()
@@ -59,5 +39,6 @@ void ATank::Fire()
 
 void ATank::AimAt(FVector i_aimPt)
 {
+	if (!AimingComponent) { return; }
 	AimingComponent->AimAt(i_aimPt, LaunchSpeed);
 }

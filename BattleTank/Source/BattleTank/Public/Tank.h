@@ -21,24 +21,16 @@ public:
 	ATank();
 
 protected:
-	// Called when the game starts or when spawned
+
 	virtual void BeginPlay() override;
 
+	UPROPERTY(BlueprintReadOnly)
 	UTankAimingComponent* AimingComponent;
 
 	UPROPERTY(BlueprintReadOnly)
 	UTankMovementComponent* MovementComponent;
 
 public:	
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	UFUNCTION(BlueprintCallable, Category = Setup)
-	void SetBarrelReference(UTankBarrel* BarrelToSet);
-
-	UFUNCTION(BlueprintCallable, Category = Setup)
-	void SetTurretReference(UTankTurret* TurretToSet);
 
 	UFUNCTION(BlueprintCallable, Category = Fire)
 	void Fire();
@@ -55,7 +47,8 @@ public:
 	double reloadTimeInSeconds = 3.0f;
 
 private:
-	UTankBarrel* Barrel = nullptr;
 
 	double lastFireTime = 0.0f;
+
+	UTankBarrel* Barrel = nullptr;
 };
