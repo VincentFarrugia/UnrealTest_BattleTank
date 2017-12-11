@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "TankBarrel.h"
 #include "TankTurret.h"
+#include "Projectile.h"
 #include "TankAimingComponent.generated.h"
 
 
@@ -26,28 +27,42 @@ public:
 	// Sets default values for this component's properties
 	UTankAimingComponent();
 
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void BeginPlay() override;
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable, Category="Setup")
 	void Initialise(UTankBarrel* BarrelToSet, UTankTurret* TurretToSet);
 
+	UFUNCTION(BlueprintCallable, Category = Fire)
+	void Fire();
+
 	void AimAt(FVector i_aimPt);
 
+	bool IsBarrelMoving();
+
 protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
 
 	UPROPERTY(BlueprintReadOnly, Category = "State")
 	EFiringStatus firingStatus = EFiringStatus::Reloading;
 
-	UPROPERTY(EditAnywhere, Category = Firing)
-	float LaunchSpeed = 4000; // In cm per second.
-
 private:
+
+	void MoveBarrel(FVector i_aimDirection);
+	void MoveTurret(FVector i_aimDirection);
+
+	UPROPERTY(EditDefaultsOnly, Category = Setup)
+	TSubclassOf<AProjectile> ProjectileBlueprint;
+
+	UPROPERTY(EditDefaultsOnly, Category = Firing)
+	float LaunchSpeed = 4000;
+
+	UPROPERTY(EditDefaultsOnly, Category = Firing)
+	double reloadTimeInSeconds = 3.0f;
+
+	double LastFireTime = 0.0f;
 
 	UTankBarrel* Barrel = nullptr;
 	UTankTurret* Turret = nullptr;
 
-	void MoveBarrel(FVector i_aimDirection);
-	void MoveTurret(FVector i_aimDirection);
+	FVector MostRecentAimAtNormVect;
 };
