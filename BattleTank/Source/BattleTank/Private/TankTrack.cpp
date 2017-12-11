@@ -1,21 +1,26 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TankTrack.h"
+#include "Runtime/Engine/Classes/Engine/World.h"
 
 UTankTrack::UTankTrack()
 {
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 }
 
-void UTankTrack::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
+void UTankTrack::BeginPlay()
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	Super::BeginPlay();
+	OnComponentHit.AddDynamic(this, &UTankTrack::OnHit);
+}
 
+void UTankTrack::ApplyAntiSlippingForce()
+{
 	// ***** Fix sideways slipping *****
 	// 1. Calculate the slippage speed.
 	double slippageSpeed = FVector::DotProduct(GetComponentVelocity(), GetRightVector());
 	// 2. Work out the required acceleration this frame to correct.
-	FVector correctionAcceleration = -((slippageSpeed / DeltaTime) * GetRightVector());
+	FVector correctionAcceleration = -((slippageSpeed / GetWorld()->GetDeltaSeconds()) * GetRightVector());
 	// 3. Calculate and apply sideways friction force (F = ma)
 	UStaticMeshComponent* tankRoot = Cast<UStaticMeshComponent>(GetOwner()->GetRootComponent());
 	FVector correctionForce = (tankRoot->GetMass() * correctionAcceleration / 2.0f); // Div by 2 because we have 2 tracks.
@@ -25,11 +30,25 @@ void UTankTrack::TickComponent(float DeltaTime, enum ELevelTick TickType, FActor
 
 void UTankTrack::SetThrottle(float Throttle)
 {
-	FVector forceApplied = GetForwardVector() * Throttle * TrackMaxDrivingForce;
+	CurrentThrottle = FMath::Clamp<float>(CurrentThrottle + Throttle, -1.0f, 1.0f);	
+}
+
+void UTankTrack::DriveTrack()
+{
+	FVector forceApplied = GetForwardVector() * CurrentThrottle * TrackMaxDrivingForce;
 	FVector forceLocation = GetComponentLocation();
 	UPrimitiveComponent* TankRoot = Cast<UPrimitiveComponent>(GetOwner()->GetRootComponent());
-	if (TankRoot)
-	{
-		TankRoot->AddForceAtLocation(forceApplied, forceLocation);
-	}
+	TankRoot->AddForceAtLocation(forceApplied, forceLocation);
+}
+
+void UTankTrack::OnHit(
+	UPrimitiveComponent* HitComponent,
+	AActor* OtherActor,
+	UPrimitiveComponent* OtherComponent,
+	FVector NormaliseImpulse,
+	const FHitResult& Hit)
+{
+	DriveTrack();
+	ApplyAntiSlippingForce();
+	CurrentThrottle = 0.0f;
 }
