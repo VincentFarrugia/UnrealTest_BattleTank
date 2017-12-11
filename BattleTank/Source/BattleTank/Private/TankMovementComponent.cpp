@@ -36,5 +36,11 @@ void UTankMovementComponent::IntendTurnRight(float Throw)
 
 void UTankMovementComponent::RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed)
 {
+	FVector aiForwardIntention = MoveVelocity.GetSafeNormal();
+	FVector tankForwardVect = GetOwner()->GetActorForwardVector().GetSafeNormal();
+	float dotProdRes = FVector::DotProduct(aiForwardIntention, tankForwardVect);
+	IntendMoveForward(dotProdRes);
 
+	FVector crossProdRes = FVector::CrossProduct(tankForwardVect, aiForwardIntention);
+	IntendTurnRight(crossProdRes.Z);
 }
