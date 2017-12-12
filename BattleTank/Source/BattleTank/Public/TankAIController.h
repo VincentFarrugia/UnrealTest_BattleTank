@@ -18,8 +18,14 @@ public:
 	void BeginPlay() override;
 	void Tick(float DeltaTime) override;
 
-	// How close the AI tank will come to its target before stopping.
+	// Called when the controller has just possessed a pawn.
+	virtual void SetPawn(APawn* InPawn) override;
 
+	// How close the AI tank will come to its target before stopping.
 	UPROPERTY(EditDefaultsOnly, Category = Setup)
 	float AcceptanceRadius = 8000.0f;
+
+private:
+	UFUNCTION()
+	void OnPossedTankDeath();
 };

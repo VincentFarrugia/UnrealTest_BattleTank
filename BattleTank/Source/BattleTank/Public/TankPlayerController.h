@@ -20,6 +20,9 @@ public:
 	void BeginPlay() override;
 	void Tick(float DeltaTime) override;
 
+	// Called when the controller has just possessed a pawn.
+	virtual void SetPawn(APawn* InPawn) override;
+
 	UPROPERTY(EditAnywhere)
 	float CrossHairXLocation_WidthPerc = 0.5f;
 
@@ -34,4 +37,7 @@ protected:
 private:
 	void AimTowardsCrosshair();
 	bool GetSightRayHitLocation(FVector& o_hitLocation) const;
+
+	UFUNCTION()
+	void OnPossessedTankDeath();
 };
