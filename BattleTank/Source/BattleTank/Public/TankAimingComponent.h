@@ -44,7 +44,7 @@ public:
 	EFiringStatus GetFiringStatus() const;
 
 	UFUNCTION(BlueprintCallable, Category = Setup)
-	int GetNumAmmoRoundsLeft() const;
+	int32 GetNumAmmoRoundsLeft() const;
 
 protected:
 
@@ -66,9 +66,9 @@ private:
 	double ReloadTimeInSeconds = 3.0f;
 
 	UPROPERTY(EditDefaultsOnly, Category = Setup)
-	int MaxAmmoRoundsCapacity = 10;
+	int32 MaxAmmoRoundsCapacity = 10;
 
-	int CurrentAmmoRoundsLeft = 0;
+	int32 CurrentAmmoRoundsLeft = 0;
 
 	double LastFireTime = 0.0f;
 
