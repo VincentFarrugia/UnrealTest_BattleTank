@@ -11,6 +11,7 @@ UTankAimingComponent::UTankAimingComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
+	CurrentAmmoRoundsLeft = MaxAmmoRoundsCapacity;
 }
 
 void UTankAimingComponent::BeginPlay()
@@ -24,17 +25,20 @@ void UTankAimingComponent::TickComponent(float DeltaTime, enum ELevelTick TickTy
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if((FPlatformTime::Seconds() - LastFireTime) < reloadTimeInSeconds)
+	if (firingStatus != EFiringStatus::OutOfAmmo)
 	{
-		firingStatus = EFiringStatus::Reloading;
-	}
-	else if(IsBarrelMoving())
-	{
-		firingStatus = EFiringStatus::Aiming;
-	}
-	else
-	{
-		firingStatus = EFiringStatus::Locked;
+		if ((FPlatformTime::Seconds() - LastFireTime) < ReloadTimeInSeconds)
+		{
+			firingStatus = EFiringStatus::Reloading;
+		}
+		else if (IsBarrelMoving())
+		{
+			firingStatus = EFiringStatus::Aiming;
+		}
+		else
+		{
+			firingStatus = EFiringStatus::Locked;
+		}
 	}
 }
 
@@ -84,12 +88,27 @@ bool UTankAimingComponent::IsBarrelMoving()
 	return (!(MostRecentAimAtNormVect.Equals(Barrel->GetForwardVector().GetSafeNormal(), 0.01f)));
 }
 
+EFiringStatus UTankAimingComponent::GetFiringStatus() const
+{
+	return firingStatus;
+}
+
+int UTankAimingComponent::GetNumAmmoRoundsLeft() const
+{
+	return CurrentAmmoRoundsLeft;
+}
+
 void UTankAimingComponent::MoveTurret(FVector i_aimDirection)
 {
 	FRotator currentTurretRotation = Turret->GetForwardVector().Rotation();
 	FRotator aimAsRotator = i_aimDirection.Rotation();
 	FRotator deltaRotator = aimAsRotator - currentTurretRotation;
-	Turret->Turn(deltaRotator.Yaw);
+	float reqYaw = deltaRotator.Yaw;
+	if (FMath::Abs(reqYaw) > 180.0f)
+	{
+		reqYaw *= -1.0f;
+	}
+	Turret->Turn(reqYaw);
 }
 
 void UTankAimingComponent::MoveBarrel(FVector i_aimDirection)
@@ -102,7 +121,8 @@ void UTankAimingComponent::MoveBarrel(FVector i_aimDirection)
 
 void UTankAimingComponent::Fire()
 {
-	if (firingStatus != EFiringStatus::Reloading)
+	if ((firingStatus != EFiringStatus::Reloading)
+		&&(firingStatus != EFiringStatus::OutOfAmmo))
 	{
 		if (!ensure(Barrel)) { return; }
 		if (!ensure(ProjectileBlueprint)) { return; }
@@ -116,5 +136,12 @@ void UTankAimingComponent::Fire()
 		ptNwProjectile->LaunchProjectile(LaunchSpeed);
 		LastFireTime = FPlatformTime::Seconds();
 		firingStatus = EFiringStatus::Reloading;
+		CurrentAmmoRoundsLeft--;
+
+		if (CurrentAmmoRoundsLeft <= 0)
+		{
+			CurrentAmmoRoundsLeft = 0;
+			firingStatus = EFiringStatus::OutOfAmmo;
+		}		
 	}
 }

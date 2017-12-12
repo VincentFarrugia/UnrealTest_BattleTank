@@ -15,7 +15,8 @@ enum class EFiringStatus : uint8
 {
 	Reloading,
 	Aiming,
-	Locked
+	Locked,
+	OutOfAmmo
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -40,6 +41,11 @@ public:
 
 	bool IsBarrelMoving();
 
+	EFiringStatus GetFiringStatus() const;
+
+	UFUNCTION(BlueprintCallable, Category = Setup)
+	int GetNumAmmoRoundsLeft() const;
+
 protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "State")
@@ -57,7 +63,12 @@ private:
 	float LaunchSpeed = 4000;
 
 	UPROPERTY(EditDefaultsOnly, Category = Firing)
-	double reloadTimeInSeconds = 3.0f;
+	double ReloadTimeInSeconds = 3.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = Setup)
+	int MaxAmmoRoundsCapacity = 10;
+
+	int CurrentAmmoRoundsLeft = 0;
 
 	double LastFireTime = 0.0f;
 

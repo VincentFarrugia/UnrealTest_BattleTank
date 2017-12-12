@@ -19,5 +19,7 @@ public:
 	void Tick(float DeltaTime) override;
 
 	// How close the AI tank will come to its target before stopping.
-	float AcceptanceRadius = 3000;
+
+	UPROPERTY(EditDefaultsOnly, Category = Setup)
+	float AcceptanceRadius = 8000.0f;
 };
