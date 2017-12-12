@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Runtime/Engine/Classes/GameFramework/ProjectileMovementComponent.h"
 #include "Runtime/Engine/Classes/Particles/ParticleSystemComponent.h"
+#include "Runtime/Engine/Classes/PhysicsEngine/RadialForceComponent.h"
 #include "Projectile.generated.h"
 
 UCLASS()
@@ -33,6 +34,12 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UParticleSystemComponent* ImpactBlast = nullptr;
 
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	URadialForceComponent* ExplosionForce = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+	float DestroyDelayInSeconds = 5.0f;
+
 	UFUNCTION()
 	void OnHit(
 		UPrimitiveComponent* HitComponent,
@@ -40,4 +47,7 @@ private:
 		UPrimitiveComponent* OtherComponent,
 		FVector NormaliseImpulse,
 		const FHitResult& Hit);
+
+	UFUNCTION()
+	void OnDestroyTimerExpired();
 };

@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Projectile.h"
+#include "Engine/World.h"
+#include "Runtime/Engine/Public/TimerManager.h"
 
 
 // Sets default values
@@ -23,6 +25,9 @@ AProjectile::AProjectile()
 
 	MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("TankProjectileMovementComponent");
 	MovementComponent->bAutoActivate = false;
+
+	ExplosionForce = CreateDefaultSubobject<URadialForceComponent>("ExplosionForce");
+	ExplosionForce->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
 // Called when the game starts or when spawned
@@ -47,4 +52,16 @@ void AProjectile::OnHit(
 {
 	LaunchBlast->Deactivate();
 	ImpactBlast->Activate();
+	ExplosionForce->FireImpulse();
+
+	SetRootComponent(ImpactBlast);
+	CollisionMesh->DestroyComponent();
+
+	FTimerHandle timerHandle;
+	GetWorld()->GetTimerManager().SetTimer(timerHandle, this, &AProjectile::OnDestroyTimerExpired, DestroyDelayInSeconds, false);
+}
+
+void AProjectile::OnDestroyTimerExpired()
+{
+	Destroy();
 }
