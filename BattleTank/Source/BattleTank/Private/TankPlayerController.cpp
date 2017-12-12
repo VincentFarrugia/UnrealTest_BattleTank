@@ -63,7 +63,7 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector& o_hitLocation) const
 
 	FVector rayExtentPt = crosshairPtInWorldSpace + (crosshairForwardVector * 99999.0f);
 	FHitResult rayHitResult;
-	didHitSomething = GetWorld()->LineTraceSingleByChannel(rayHitResult, crosshairPtInWorldSpace, rayExtentPt, ECollisionChannel::ECC_Visibility);
+	didHitSomething = GetWorld()->LineTraceSingleByChannel(rayHitResult, crosshairPtInWorldSpace, rayExtentPt, ECollisionChannel::ECC_Camera);
 
 	if (didHitSomething)
 	{
